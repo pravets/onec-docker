@@ -34,8 +34,8 @@ docker build \
 	--build-arg DOCKER_USERNAME=$DOCKER_USERNAME \
     --build-arg BASE_IMAGE=oscript-jdk \
     --build-arg BASE_TAG=latest \
-    -t $DOCKER_USERNAME/oscript-agent:latest \
+    -t $DOCKER_USERNAME/oscript-k8s-agent:latest \
 	-f k8s-jenkins-agent/Dockerfile \
     $last_arg
 
-docker push $DOCKER_USERNAME/oscript-agent:latest
+docker push $DOCKER_USERNAME/oscript-k8s-agent:latest

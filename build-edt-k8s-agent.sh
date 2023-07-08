@@ -35,8 +35,8 @@ docker build \
     --build-arg DOCKER_USERNAME=$DOCKER_USERNAME \
     --build-arg BASE_IMAGE=edt \
     --build-arg BASE_TAG=$edt_escaped \
-    -t $DOCKER_USERNAME/edt-agent:$edt_escaped \
+    -t $DOCKER_USERNAME/edt-k8s-agent:$edt_escaped \
 	-f k8s-jenkins-agent/Dockerfile \
     $last_arg
 
-docker push $DOCKER_USERNAME/edt-agent:$edt_escaped
+docker push $DOCKER_USERNAME/edt-k8s-agent:$edt_escaped

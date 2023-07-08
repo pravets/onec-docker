@@ -71,8 +71,8 @@ docker build \
     --build-arg DOCKER_USERNAME=$DOCKER_USERNAME \
     --build-arg BASE_IMAGE=onec-client-vnc-oscript-jdk-testutils \
     --build-arg BASE_TAG=$ONEC_VERSION \
-    -t $DOCKER_USERNAME/base-jenkins-agent:$ONEC_VERSION \
+    -t $DOCKER_USERNAME/base-jenkins-k8s-agent:$ONEC_VERSION \
     -f k8s-jenkins-agent/Dockerfile \
     $last_arg
 
-docker push $DOCKER_USERNAME/base-jenkins-agent:$ONEC_VERSION
+docker push $DOCKER_USERNAME/base-jenkins-k8s-agent:$ONEC_VERSION
