@@ -5,7 +5,7 @@ if [ $DOCKER_CR_YANDEX = 'true' ] ; then
    cat $DOCKER_PASSWORD | docker login \
       --username $DOCKER_LOGIN \
       --password-stdin \
-      cr.yandex
+      $DOCKER_REGISTRY_URL
 else
    docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD $DOCKER_REGISTRY_URL
 fi
