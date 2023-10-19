@@ -1,7 +1,14 @@
 #!/bin/bash
 set -e
 
-docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD $DOCKER_REGISTRY_URL
+if [ $DOCKER_CR_YANDEX = 'true' ] ; then
+   cat $DOCKER_PASSWORD | docker login \
+      --username $DOCKER_LOGIN \
+      --password-stdin \
+      $DOCKER_REGISTRY_URL
+else
+   docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD $DOCKER_REGISTRY_URL
+fi
 
 if [ $DOCKER_SYSTEM_PRUNE = 'true' ] ; then
     docker system prune -af
