@@ -1,70 +1,8 @@
-# Описание
+﻿# Описание
 
 [![forthebadge](http://forthebadge.com/images/badges/built-with-love.svg)](http://forthebadge.com)
 
 В данном репозитории находятся файлы для сборки образов [Docker](https://www.docker.com) с платформой [1С:Предприятие](http://v8.1c.ru) 8.3.
-
-> Скрипт скачивания платформы позаимствован отсюда https://github.com/Infactum/onec_dock/blob/master/download.sh :+1:
-
-# Использование
-
-В терминале введите:
-
-Команда Linux:
-```bash
-# для Linux
-$ cp .onec.env.example .onec.env
-```
-```batch
-:: для Windows
-copy .onec.env.bat.example env.bat
-```
-
-Скорректируйте файл `.onec.env` в соответствии со своим окружением:
-
-* ONEC_USERNAME - учётная запись на http://releases.1c.ru
-* ONEC_PASSWORD - пароль для учётной записи на http://releases.1c.ru
-* ONEC_VERSION - версия платформы 1С:Преприятия 8.3, которая будет в образе
-* DOCKER_USERNAME - учётная запись на [Docker Hub](https://hub.docker.com), или адрес локального registry, или адрес registry на cr.yandex
-* DOCKER_CR_YANDEX - признак, что используется registry на cr.yandex
-* DOCKER_LOGIN - имя пользователя registry
-* DOCKER_PASSWORD - пароль пользователя registry, а в случае с cr.yandex - имя файла с данными авторизации [по json ключу](https://cloud.yandex.ru/docs/container-registry/operations/authentication#sa-json).
-
-Затем экспортируйте все необходимые переменные:
-
-```bash
-# для Linux
-$ eval $(cat .onec.env)
-```
-```batch
-:: для Windows
-env.bat
-```
-
-## Как сбилдить образы
-
-:point_up: Введите в терминале команду `docker build` из соответствующей секции.
-
-:tada: Или, если установлен `make`, досточно команды `make all`.
-
-## Как запустить в docker-compose
-:exclamation: тестировалось только на macOS Mojave и Ubuntu 16.04/18.04
-
-```bash
-$ cp .env.example .env
-# подправьте файл .env под себя
-$ docker-compose up -d
-```
-
-## Как использовать готовые дистрибутивы
-
-Вы можете использовать готовые дистрибутивы платформы, для этого достаточно разместить их в папке `distr`. Скрипты будут автоматически использовать их для сборки образа.
-
-## Как использовать nethasp.ini в Jenkins + Docker Swarm plugin
-
-- взять ваш файл nethasp.ini
-- создать из него docker config командой `docker config create nethasp.ini ./nethasp.ini`
-- в Jenkins, в настройках Docker Agent templates у соответствующих агентов в параметре Configs указать `nethasp.ini:/opt/1cv8/current/conf/nethasp.ini`  
 
 # Оглавление
 
@@ -88,6 +26,66 @@ $ docker-compose up -d
   - [oscript](#oscript)
   - [vanessa-runner](#vanessa-runner)
   - [EDT](#edt)
+  
+# Использование
+
+В терминале введите:
+
+Команда Linux:
+```bash
+# для Linux
+$ cp .onec.env.example .onec.env
+```
+```batch
+:: для Windows
+copy .onec.env.bat.example env.bat
+```
+
+Скорректируйте файл `.onec.env` в соответствии со своим окружением:
+
+* ONEC_USERNAME - учётная запись на http://releases.1c.ru
+* ONEC_PASSWORD - пароль для учётной записи на http://releases.1c.ru
+* ONEC_VERSION - версия платформы 1С:Преприятия 8.3, которая будет в образе
+* DOCKER_REGISTRY_URL - Адрес Docker-registry в котором будут храниться образы
+* DOCKER_CR_YANDEX - признак, что используется registry на cr.yandex
+* DOCKER_LOGIN - имя пользователя registry
+* DOCKER_PASSWORD - пароль пользователя registry, а в случае с cr.yandex - имя файла с данными авторизации [по json ключу](https://cloud.yandex.ru/docs/container-registry/operations/authentication#sa-json).
+
+
+Затем экспортируйте все необходимые переменные:
+
+```bash
+# для Linux
+$ source .onec.env
+```
+```batch
+:: для Windows
+env.bat
+```
+
+## Как сбилдить образы
+
+:point_up: Запустите последовательно скрипты для сборки образов.
+
+1. Если вам нужны образы для использования в docker-swarm:
+
+    * build-base-swarm-jenkins-agent.sh
+    * build-edt-swarm-agent.sh
+    * build-oscript-swarm-agent.sh
+2. Если же вы планируете использовать k8s
+    * build-base-k8s-jenkins-agent.sh
+    * build-edt-k8s-agent.sh
+    * build-oscript-k8s-agent.sh
+
+## Как использовать готовые дистрибутивы
+
+Вы можете использовать готовые дистрибутивы платформы, для этого достаточно разместить их в папке `distr`. Скрипты будут автоматически использовать их для сборки образа.
+
+## Как использовать nethasp.ini в Jenkins + Docker Swarm plugin
+
+- взять ваш файл nethasp.ini
+- создать из него docker config командой `docker config create nethasp.ini ./nethasp.ini`
+- в Jenkins, в настройках Docker Agent templates у соответствующих агентов в параметре Configs указать `nethasp.ini:/opt/1cv8/current/conf/nethasp.ini`  
 
 ## Сервер
 [(Наверх)](#Оглавление)
@@ -96,7 +94,7 @@ $ docker-compose up -d
 docker build --build-arg ONEC_USERNAME=${ONEC_USERNAME} \
   --build-arg ONEC_PASSWORD=${ONEC_PASSWORD} \
   --build-arg ONEC_VERSION=${ONEC_VERSION} \
-  -t ${DOCKER_USERNAME}/onec-server:${ONEC_VERSION} \
+  -t ${DOCKER_REGISTRY_URL}/onec-server:${ONEC_VERSION} \
   -f server/Dockerfile .
 ```
 
@@ -108,7 +106,7 @@ docker build --build-arg ONEC_USERNAME=${ONEC_USERNAME} \
   --build-arg ONEC_PASSWORD=${ONEC_PASSWORD} \
   --build-arg ONEC_VERSION=${ONEC_VERSION} \
   --build-arg nls_enabled=true \
-  -t ${DOCKER_USERNAME}/onec-server-nls:${ONEC_VERSION} \
+  -t ${DOCKER_REGISTRY_URL}/onec-server-nls:${ONEC_VERSION} \
   -f server/Dockerfile .
 ```
 
@@ -119,7 +117,7 @@ docker build --build-arg ONEC_USERNAME=${ONEC_USERNAME} \
 docker build --build-arg ONEC_USERNAME=${ONEC_USERNAME} \
   --build-arg ONEC_PASSWORD=${ONEC_PASSWORD} \
   --build-arg ONEC_VERSION=${ONEC_VERSION} \
-  -t ${DOCKER_USERNAME}/onec-client:${ONEC_VERSION} \
+  -t ${DOCKER_REGISTRY_URL}/onec-client:${ONEC_VERSION} \
   -f client/Dockerfile .
 ```
 
@@ -127,9 +125,9 @@ docker build --build-arg ONEC_USERNAME=${ONEC_USERNAME} \
 [(Наверх)](#Оглавление)
 
 ```bash
-docker build --build-arg DOCKER_USERNAME=${DOCKER_USERNAME} \
+docker build --build-arg DOCKER_REGISTRY_URL=${DOCKER_REGISTRY_URL} \
   --build-arg ONEC_VERSION=${ONEC_VERSION} \
-  -t ${DOCKER_USERNAME}/onec-client-vnc:${ONEC_VERSION} \
+  -t ${DOCKER_REGISTRY_URL}/onec-client-vnc:${ONEC_VERSION} \
   -f client-vnc/Dockerfile .
 ```
 
@@ -141,7 +139,7 @@ docker build --build-arg ONEC_USERNAME=${ONEC_USERNAME} \
   --build-arg ONEC_PASSWORD=${ONEC_PASSWORD} \
   --build-arg ONEC_VERSION=${ONEC_VERSION} \
   --build-arg nls_enabled=true \
-  -t ${DOCKER_USERNAME}/onec-client-nls:${ONEC_VERSION} \
+  -t ${DOCKER_REGISTRY_URL}/onec-client-nls:${ONEC_VERSION} \
   -f client/Dockerfile .
 ```
 
@@ -152,7 +150,7 @@ docker build --build-arg ONEC_USERNAME=${ONEC_USERNAME} \
 docker build --build-arg ONEC_USERNAME=${ONEC_USERNAME} \
   --build-arg ONEC_PASSWORD=${ONEC_PASSWORD} \
   --build-arg ONEC_VERSION=${ONEC_VERSION} \
-  -t ${DOCKER_USERNAME}/onec-thin-client:${ONEC_VERSION} \
+  -t ${DOCKER_REGISTRY_URL}/onec-thin-client:${ONEC_VERSION} \
   -f thin-client/Dockerfile .
 ```
 
@@ -164,7 +162,7 @@ docker build --build-arg ONEC_USERNAME=${ONEC_USERNAME} \
   --build-arg ONEC_PASSWORD=${ONEC_PASSWORD} \
   --build-arg ONEC_VERSION=${ONEC_VERSION} \
   --build-arg nls_enabled=true \
-  -t ${DOCKER_USERNAME}/onec-thin-client-nls:${ONEC_VERSION} \
+  -t ${DOCKER_REGISTRY_URL}/onec-thin-client-nls:${ONEC_VERSION} \
   -f thin-client/Dockerfile .
 ```
 
@@ -175,7 +173,7 @@ docker build --build-arg ONEC_USERNAME=${ONEC_USERNAME} \
 docker build --build-arg ONEC_USERNAME=${ONEC_USERNAME} \
   --build-arg ONEC_PASSWORD=${ONEC_PASSWORD} \
   --build-arg ONEC_VERSION=${ONEC_VERSION} \
-  -t ${DOCKER_USERNAME}/onec-crs:${ONEC_VERSION} \
+  -t ${DOCKER_REGISTRY_URL}/onec-crs:${ONEC_VERSION} \
   -f crs/Dockerfile .
 ```
 
@@ -183,9 +181,9 @@ docker build --build-arg ONEC_USERNAME=${ONEC_USERNAME} \
 [(Наверх)](#Оглавление)
 
 ```bash
-docker build --build-arg DOCKER_USERNAME=${DOCKER_USERNAME} \
+docker build --build-arg DOCKER_REGISTRY_URL=${DOCKER_REGISTRY_URL} \
   --build-arg ONEC_VERSION=${ONEC_VERSION} \
-  -t ${DOCKER_USERNAME}/onec-rac-gui:${ONEC_VERSION}-1.0.1 \
+  -t ${DOCKER_REGISTRY_URL}/onec-rac-gui:${ONEC_VERSION}-1.0.1 \
   -f rac-gui/Dockerfile .
 ```
 
@@ -193,9 +191,9 @@ docker build --build-arg DOCKER_USERNAME=${DOCKER_USERNAME} \
 [(Наверх)](#Оглавление)
 
 ```bash
-docker build --build-arg DOCKER_USERNAME=${DOCKER_USERNAME} \
+docker build --build-arg DOCKER_REGISTRY_URL=${DOCKER_REGISTRY_URL} \
   --build-arg ONEC_VERSION=${ONEC_VERSION} \
-  -t ${DOCKER_USERNAME}/gitsync:3.0.0 \
+  -t ${DOCKER_REGISTRY_URL}/gitsync:3.0.0 \
   -f gitsync/Dockerfile .
 ```
 
@@ -203,9 +201,9 @@ docker build --build-arg DOCKER_USERNAME=${DOCKER_USERNAME} \
 [(Наверх)](#Оглавление)
 
 ```bash
-docker build --build-arg DOCKER_USERNAME=${DOCKER_USERNAME} \
+docker build --build-arg DOCKER_REGISTRY_URL=${DOCKER_REGISTRY_URL} \
   --build-arg ONEC_VERSION=${ONEC_VERSION} \
-  -t ${DOCKER_USERNAME}/oscript:1.0.21 \
+  -t ${DOCKER_REGISTRY_URL}/oscript:1.0.21 \
   -f oscript/Dockerfile .
 ```
 
@@ -213,8 +211,8 @@ docker build --build-arg DOCKER_USERNAME=${DOCKER_USERNAME} \
 [(Наверх)](#Оглавление)
 
 ```bash
-docker build --build-arg DOCKER_USERNAME=${DOCKER_USERNAME} \
-  -t ${DOCKER_USERNAME}/runner:1.7.0 \
+docker build --build-arg DOCKER_REGISTRY_URL=${DOCKER_REGISTRY_URL} \
+  -t ${DOCKER_REGISTRY_URL}/runner:1.7.0 \
   -f vanessa-runner/Dockerfile .
 ```
 ## EDT
@@ -223,6 +221,6 @@ docker build --build-arg DOCKER_USERNAME=${DOCKER_USERNAME} \
 docker build --build-arg ONEC_USERNAME=${ONEC_USERNAME} \
     --build-arg ONEC_PASSWORD=${ONEC_PASSWORD} \
     --build-arg EDT_VERSION=${EDT_VERSION} \
-    -t ${DOCKER_USERNAME}/edt:${EDT_VERSION} \
+    -t ${DOCKER_REGISTRY_URL}/edt:${EDT_VERSION} \
     -f edt/Dockerfile .
 ```
