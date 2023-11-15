@@ -41,6 +41,10 @@ else
 fi
 
 case "$installer_type" in
+  executor)
+      echo "Executor"
+      /tmp/oneget_tool/oneget get "executor:linux@"$ONEC_VERSION
+      ;;
   edt)
       echo "EDT"
       /tmp/oneget_tool/oneget get "edt:linux@"$ONEC_VERSION
