@@ -8,7 +8,7 @@ LABEL maintainer="Iosif Pravets <i@pravets.ru>"
 
 ARG ONEC_USERNAME
 ARG ONEC_PASSWORD
-ARG EDT_VERSION=3.0.2.2
+ARG EXECUTOR_VERSION=3.0.2.2
 
 ENV installer_type=executor \
   ONEC_VERSION=${EXECUTOR_VERSION}
@@ -24,6 +24,8 @@ RUN apt-get update \
     # edt dependencies
     libgtk-3-0 \
     locales \
+    # build dependencies
+    unzip \
   && rm -rf  \
     /var/lib/apt/lists/* \
     /var/cache/debconf \
@@ -33,7 +35,7 @@ RUN apt-get update \
 ARG downloads=downloads/executor/${ONEC_VERSION}
 ENV LANG ru_RU.UTF-8
 
-# Install EDT
+# Install Executor
 COPY ./distr ./${downloads}
 RUN rm ./${downloads}/.gitkeep \
   && rm -rf ${downloads}/server*.tar.gz \
@@ -45,12 +47,12 @@ RUN rm ./${downloads}/.gitkeep \
   && sync; /download_og.sh; \
   fi \
   && ls ${downloads} \
-  && for file in ${downloads}/*.tar.gz; do tar -zxf "$file"; done \
-  && rm -rf ${downloads}/*.tar.gz \
-  && mkdir /opt/1C/executor \
-  && cp -R * /opt/1C/executor \
-  && rm -rf /tmp/* \
+  && for file in ${downloads}/*.zip; do unzip "$file"; done \
+  && rm -rf ${downloads}/*.zip \ 
+  && mkdir /opt/executor \
+  && cp -R * /opt/executor \
 # cleanup
-  && rm -rf /tmp/*
+  && rm -rf /tmp/* \
+  && apt purge -y unzip
 
-ENV PATH="/opt/1C/executor:$PATH"
+ENV PATH="/opt/executor:$PATH"
