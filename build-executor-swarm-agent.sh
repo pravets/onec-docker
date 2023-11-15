@@ -28,7 +28,7 @@ docker build \
     --build-arg ONEC_PASSWORD=$ONEC_PASSWORD \
     --build-arg EXECUTOR_VERSION="$EXECUTOR_VERSION" \
     -t $DOCKER_REGISTRY_URL/edt:$executor_escaped \
-    -f edt/Dockerfile \
+    -f executor/Dockerfile \
     $last_arg
 
 docker push $DOCKER_REGISTRY_URL/edt:$executor_escaped
