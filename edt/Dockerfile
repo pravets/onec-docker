@@ -9,6 +9,7 @@ LABEL maintainer="Nikita Gryzlov <NikGryzlov@1bit.com>, FirstBit"
 ARG ONEC_USERNAME
 ARG ONEC_PASSWORD
 ARG EDT_VERSION=2021.3
+ARG EDT_FOLDER=1c-edt-2021.3.1+1-x86_64
 
 ENV installer_type=edt \
   ONEC_VERSION=${EDT_VERSION}
@@ -47,8 +48,23 @@ RUN rm ./${downloads}/.gitkeep \
   && ls ${downloads} \
   && for file in ${downloads}/*.tar.gz; do tar -zxf "$file"; done \
   && rm -rf ${downloads}/*.tar.gz \
-  && ./1ce-installer-cli install all --ignore-hardware-checks \
+  && ./1ce-installer-cli install all --ignore-hardware-checks --ignore-signature-warnings \
   && rm -rf /tmp/* \
-  && mv $(dirname $(find /opt/1C/1CE -name ring)) /opt/1C/1CE/components/1c-enterprise-ring
+  && export edt_path=$(dirname $(find /opt/1C/1CE -name 1cedt)) \
+  && mv $(dirname $(find /opt/1C/1CE -name ring)) /opt/1C/1CE/components/1c-enterprise-ring \
 
-ENV PATH="/opt/1C/1CE/components/1c-enterprise-ring:$PATH"
+# Install Disable Editing Plugin
+  && $edt_path/1cedt -clean -purgeHistory -application org.eclipse.equinox.p2.director -noSplash -repository 'https://marmyshev.gitlab.io/edt-editing/update' -installIUs 'org.mard.dt.editing.feature.feature.group' \
+
+# cleanup
+  && rm -f $edt_path/configuration/*.log \
+  && rm -rf $edt_path/configuration/org.eclipse.core.runtime \
+  && rm -rf $edt_path/configuration/org.eclipse.osgi \
+  && rm -rf $edt_path/plugin-development \
+  && rm -f $edt_path/plugins/com._1c.g5.v8.dt.platform.doc_*.jar \
+  && rm -f $edt_path/plugins/com._1c.g5.v8.dt.product.doc_*.jar \
+  && rm -f $edt_path/plugins/org.eclipse.egit.doc_*.jar \
+  && rm -f $edt_path/plugins/org.eclipse.platform.doc_*.jar \
+  && rm -rf /tmp/*
+
+ENV PATH="/opt/1C/1CE/components/$EDT_FOLDER:/opt/1C/1CE/components/1c-enterprise-ring:$PATH"

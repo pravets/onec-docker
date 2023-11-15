@@ -27,9 +27,12 @@ docker build \
     --build-arg ONEC_USERNAME=$ONEC_USERNAME \
     --build-arg ONEC_PASSWORD=$ONEC_PASSWORD \
     --build-arg EDT_VERSION="$EDT_VERSION" \
+    --build-arg EDT_FOLDER="$EDT_FOLDER" \
     -t $DOCKER_REGISTRY_URL/edt:$edt_escaped \
     -f edt/Dockerfile \
     $last_arg
+
+docker push $DOCKER_REGISTRY_URL/edt:$edt_escaped
 
 docker build \
     --build-arg DOCKER_REGISTRY_URL=$DOCKER_REGISTRY_URL \
