@@ -30,7 +30,7 @@ RUN apt-get update \
     /tmp/* \
   && localedef -i ru_RU -c -f UTF-8 -A /usr/share/locale/locale.alias ru_RU.UTF-8
 
-ARG downloads=downloads/developmenttools10/${ONEC_VERSION}
+ARG downloads=downloads/executor/${ONEC_VERSION}
 ENV LANG ru_RU.UTF-8
 
 # Install EDT
@@ -39,8 +39,8 @@ RUN rm ./${downloads}/.gitkeep \
   && rm -rf ${downloads}/server*.tar.gz \
   && rm -rf ${downloads}/deb*.tar.gz \
   && rm -rf ${downloads}/thin.client*.tar.gz \
-  && if [ -z "$(ls -A ${downloads})" ]; then \
   && rm -rf ${downloads}/1c_edt*.tar.gz \
+  && if [ -z "$(ls -A ${downloads})" ]; then \
   chmod +x /download_og.sh \
   && sync; /download_og.sh; \
   fi \
