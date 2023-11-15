@@ -51,7 +51,6 @@ copy .onec.env.bat.example env.bat
 * DOCKER_LOGIN - имя пользователя registry
 * DOCKER_PASSWORD - пароль пользователя registry, а в случае с cr.yandex - имя файла с данными авторизации [по json ключу](https://cloud.yandex.ru/docs/container-registry/operations/authentication#sa-json).
 
-
 Затем экспортируйте все необходимые переменные:
 
 ```bash
