@@ -41,6 +41,7 @@ RUN rm ./${downloads}/.gitkeep \
   && rm -rf ${downloads}/server*.tar.gz \
   && rm -rf ${downloads}/deb*.tar.gz \
   && rm -rf ${downloads}/thin.client*.tar.gz \
+  && rm -rf ${downloads}/*.zip \ 
   && if [ -z "$(ls -A ${downloads})" ]; then \
   chmod +x /download_og.sh \
   && sync; /download_og.sh; \

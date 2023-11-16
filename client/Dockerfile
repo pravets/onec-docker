@@ -14,6 +14,7 @@ RUN rm ./${downloads}/.gitkeep \
   && rm -rf ${downloads}/deb*.tar.gz \
   && rm -rf ${downloads}/thin.client*.tar.gz \
   && rm -rf ${downloads}/1c_edt*.tar.gz \
+  && rm -rf ${downloads}/*.zip \ 
   && if [ -z "$(ls -A ${downloads})" ]; then \
   apk --no-cache add bash curl grep tar \
   && chmod +x /download_og.sh \
