@@ -46,6 +46,7 @@ copy .onec.env.bat.example env.bat
 * ONEC_USERNAME - учётная запись на http://releases.1c.ru
 * ONEC_PASSWORD - пароль для учётной записи на http://releases.1c.ru
 * ONEC_VERSION - версия платформы 1С:Преприятия 8.3, которая будет в образе
+* EXECUTOR_VERSION - версия 1С:Исполнитель, которая будет в соответствующем образе
 * DOCKER_REGISTRY_URL - Адрес Docker-registry в котором будут храниться образы
 * DOCKER_CR_YANDEX - признак, что используется registry на cr.yandex
 * DOCKER_LOGIN - имя пользователя registry
@@ -71,6 +72,7 @@ env.bat
     * build-base-swarm-jenkins-agent.sh
     * build-edt-swarm-agent.sh
     * build-oscript-swarm-agent.sh
+    * build-executor-swarm-agent.sh
 2. Если же вы планируете использовать k8s
     * build-base-k8s-jenkins-agent.sh
     * build-edt-k8s-agent.sh
