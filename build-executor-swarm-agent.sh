@@ -33,12 +33,12 @@ docker build \
 
 docker push $DOCKER_REGISTRY_URL/executor:$executor_escaped
 
-#docker build \
-#    --build-arg DOCKER_REGISTRY_URL=$DOCKER_REGISTRY_URL \
-#    --build-arg BASE_IMAGE=edt \
-#    --build-arg BASE_TAG=$edt_escaped \
-#    -t $DOCKER_REGISTRY_URL/edt-agent:$edt_escaped \
-#	-f swarm-jenkins-agent/Dockerfile \
-#    $last_arg
-#
-#docker push $DOCKER_REGISTRY_URL/edt-agent:$edt_escaped
+docker build \
+    --build-arg DOCKER_REGISTRY_URL=$DOCKER_REGISTRY_URL \
+    --build-arg BASE_IMAGE=executor \
+    --build-arg BASE_TAG=$executor_escaped \
+    -t $DOCKER_REGISTRY_URL/executor-agent:$executor_escaped \
+	-f swarm-jenkins-agent/Dockerfile \
+    $last_arg
+
+docker push $DOCKER_REGISTRY_URL/executor-agent:$executor_escaped

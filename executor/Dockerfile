@@ -1,6 +1,6 @@
 ARG DOCKER_REGISTRY_URL=library
-ARG BASE_IMAGE=eclipse-temurin
-ARG BASE_TAG=11
+ARG BASE_IMAGE=ubuntu
+ARG BASE_TAG=22.04
 
 FROM ${DOCKER_REGISTRY_URL}/${BASE_IMAGE}:${BASE_TAG}
 
@@ -19,11 +19,10 @@ WORKDIR /tmp
 
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+    locales \
+    ca-certificates \
     # downloader dependencies
     curl \
-    # edt dependencies
-    libgtk-3-0 \
-    locales \
     # build dependencies
     unzip \
   && rm -rf  \
