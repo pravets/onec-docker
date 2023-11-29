@@ -34,6 +34,19 @@ docker push $DOCKER_REGISTRY_URL/base-ones-server:$ONEC_VERSION
 docker build \
     --pull \
     --build-arg DOCKER_REGISTRY_URL=$DOCKER_REGISTRY_URL \
+    --build-arg ONEC_USERNAME=$ONEC_USERNAME \
+    --build-arg ONEC_PASSWORD=$ONEC_PASSWORD \
+    --build-arg ONEC_VERSION=$ONEC_VERSION \
+    --build-arg EXECUTOR_VERSION=$EXECUTOR_VERSION \
+    -t $DOCKER_REGISTRY_URL/base-ones-server-scripted:$ONEC_VERSION \
+    -f base-server-scripted/Dockerfile \
+    $last_arg
+
+docker push $DOCKER_REGISTRY_URL/base-ones-server-scripted:$ONEC_VERSION
+
+docker build \
+    --pull \
+    --build-arg DOCKER_REGISTRY_URL=$DOCKER_REGISTRY_URL \
     --build-arg ONEC_VERSION=$ONEC_VERSION \
     -t $DOCKER_REGISTRY_URL/ibcmd:$ONEC_VERSION \
     -f ibcmd/Dockerfile \
