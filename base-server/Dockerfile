@@ -62,10 +62,58 @@ COPY --from=base /bin/gosu /bin/gosu
 
 RUN set -xe \
   && apt-get update \
+  && env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    dbus-x11 \
+    psmisc \
+    xdg-utils \
+    x11-xserver-utils \
+    x11-utils \
+    xvfb \
+  && env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    xfce4 \
+    xfce4-goodies \
+  && sed -i 's%<property name="ThemeName" type="string" value="Xfce"/>%<property name="ThemeName" type="string" value="Raleigh"/>%' /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    dirmngr \
+    gnupg \
+  && echo "deb http://http.debian.net/debian/ bullseye main contrib non-free" > /etc/apt/sources.list \
+  && echo "deb http://http.debian.net/debian/ bullseye-backports main" >> /etc/apt/sources.list \
+  && echo "deb http://http.debian.net/debian/ bullseye-proposed-updates main contrib non-free" >> /etc/apt/sources.list \
+  && echo "deb http://security.debian.org/debian-security/ bullseye-security main contrib non-free" >> /etc/apt/sources.list \
+  && echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections \
+  && apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       locales \
       imagemagick \
       fontconfig \
+      ca-certificates \
+      git \
+      ttf-mscorefonts-installer \
+      libfontconfig1 \
+      libgsf-1-114 \
+      libglib2.0-0 \
+      libgtk2.0-0 \
+      libodbc1 \
+      libtcmalloc-minimal4 \
+      libmagickwand-6.q16-6 \
+      at-spi2-core \
+      procps \
+      x11vnc \
+  # Install libpng12-0 from xenial
+  && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 40976EAF437D05B5 \
+  && echo "deb http://security.ubuntu.com/ubuntu xenial-security main" > /etc/apt/sources.list.d/xenial-security.list \
+  && apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      libpng12-0 \
+  && rm -rf  /etc/apt/sources.list.d/xenial-security.list \
+  && apt-get update \
+  # Install libwebkitgtk from stretch
+  && echo "deb http://archive.debian.org/debian/ stretch main contrib non-free" > /etc/apt/sources.list.d/stretch.list \
+  && apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    libwebkitgtk-3.0-0 \
+  && rm -rf  /etc/apt/sources.list.d/stretch.list \
+  && apt-get update \
   && rm -rf \
     /var/lib/apt/lists/* \
     /var/cache/debconf \
@@ -80,3 +128,6 @@ RUN groupadd -r grp1cv8 --gid=$onec_gid \
 VOLUME /home/usr1cv8/.1cv8 /var/log/1C
 
 ENV PATH=/opt/1cv8/current:$PATH
+ENV DISPLAY=:0
+ENV DISPLAY_WIDTH=1440
+ENV DISPLAY_HEIGHT=900
